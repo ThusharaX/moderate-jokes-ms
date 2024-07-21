@@ -8,4 +8,6 @@ export const envs = {
   LOCAL_DOMAIN: get('LOCAL_DOMAIN').required().asString(),
   PROD_DOMAIN: get('PROD_DOMAIN').required().asString(),
   BACKEND_DOMAIN: get('BACKEND_DOMAIN').required().asString(),
+  JWT_SECRET: get('JWT_SECRET').required().asString(),
+  MONGO_URI: get('MONGO_URI').required().asString(),
 };
