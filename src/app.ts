@@ -19,6 +19,7 @@ app.use(cors({
     envs.PROD_DOMAIN,
   ],
   optionsSuccessStatus: 200,
+  credentials: true,
 }));
 
 if (envs.NODE_ENV !== 'production') {
