@@ -1,4 +1,4 @@
-import User from '../models/user.model';
+import User from "../models/user.model";
 
 const createUser = async (data: { email: string; password: string }) => {
   const user = new User(data);
@@ -7,7 +7,7 @@ const createUser = async (data: { email: string; password: string }) => {
 
 const getUserByEmail = async (email: string) => {
   return await User.findOne({
-    email
+    email,
   });
 };
 
