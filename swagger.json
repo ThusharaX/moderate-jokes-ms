@@ -1,25 +1,29 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "JokeHub API",
+    "title": "Moderate Jokes API",
     "version": "1.0.0",
-    "description": "API documentation for JokeHub"
+    "description": "API documentation for Moderate Jokes Microservice"
   },
   "servers": [
     {
-      "url": "http://localhost:3001/api/v1",
+      "url": "http://localhost:3002/moderate",
       "description": "Local server"
     }
   ],
   "paths": {
-    "/jokes": {
+    "/jokes/submitted": {
       "get": {
-        "summary": "Get all jokes",
-        "operationId": "getJokes",
+        "summary": "Get all submitted jokes",
         "tags": ["Jokes"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "responses": {
           "200": {
-            "description": "A list of jokes",
+            "description": "List of all submitted jokes",
             "content": {
               "application/json": {
                 "schema": {
@@ -32,40 +36,17 @@
             }
           }
         }
-      },
-      "post": {
-        "summary": "Create a new joke",
-        "operationId": "createJoke",
-        "tags": ["Jokes"],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/NewJoke"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Joke created successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Joke"
-                }
-              }
-            }
-          }
-        }
       }
     },
-    "/jokes/{id}": {
+    "/jokes/submitted/{id}": {
       "get": {
-        "summary": "Get a joke by ID",
-        "operationId": "getJokeById",
+        "summary": "Get a submitted joke by ID",
         "tags": ["Jokes"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "id",
@@ -73,13 +54,12 @@
             "required": true,
             "schema": {
               "type": "string"
-            },
-            "description": "ID of the joke to retrieve"
+            }
           }
         ],
         "responses": {
           "200": {
-            "description": "Joke retrieved successfully",
+            "description": "A single joke",
             "content": {
               "application/json": {
                 "schema": {
@@ -93,10 +73,14 @@
           }
         }
       },
-      "put": {
-        "summary": "Update a joke by ID",
-        "operationId": "updateJoke",
+      "patch": {
+        "summary": "Update a submitted joke by ID",
         "tags": ["Jokes"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "id",
@@ -104,8 +88,7 @@
             "required": true,
             "schema": {
               "type": "string"
-            },
-            "description": "ID of the joke to update"
+            }
           }
         ],
         "requestBody": {
@@ -113,14 +96,14 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UpdateJoke"
+                "$ref": "#/components/schemas/Joke"
               }
             }
           }
         },
         "responses": {
           "200": {
-            "description": "Joke updated successfully",
+            "description": "Joke updated",
             "content": {
               "application/json": {
                 "schema": {
@@ -135,9 +118,13 @@
         }
       },
       "delete": {
-        "summary": "Delete a joke by ID",
-        "operationId": "deleteJoke",
+        "summary": "Delete a submitted joke by ID",
         "tags": ["Jokes"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "id",
@@ -145,16 +132,169 @@
             "required": true,
             "schema": {
               "type": "string"
-            },
-            "description": "ID of the joke to delete"
+            }
           }
         ],
         "responses": {
-          "204": {
-            "description": "Joke deleted successfully"
+          "200": {
+            "description": "Joke deleted"
           },
           "404": {
             "description": "Joke not found"
+          }
+        }
+      }
+    },
+    "/jokes/joke-types": {
+      "get": {
+        "summary": "Get all joke types",
+        "tags": ["Jokes"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of all joke types",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/jokes/approve/{id}": {
+      "post": {
+        "summary": "Approve a joke by ID",
+        "tags": ["Jokes"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Joke approved"
+          },
+          "404": {
+            "description": "Joke not found"
+          }
+        }
+      }
+    },
+    "/jokes/reject/{id}": {
+      "delete": {
+        "summary": "Reject a joke by ID",
+        "tags": ["Jokes"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Joke rejected"
+          },
+          "404": {
+            "description": "Joke not found"
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "summary": "User login",
+        "tags": ["Authentication"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              },
+              "examples": {
+                "admin": {
+                  "value": {
+                    "email": "admin@admin.com",
+                    "password": "admin123"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful login",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials"
+          }
+        }
+      }
+    },
+    "/auth/register": {
+      "post": {
+        "summary": "User registration",
+        "tags": ["Authentication"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful registration",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input"
           }
         }
       }
@@ -165,72 +305,78 @@
       "Joke": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "string",
-            "example": "5f8d0d55b54764421b7156c3"
+          "_id": {
+            "type": "string"
           },
           "setup": {
-            "type": "string",
-            "example": "Why don't scientists trust atoms?"
+            "type": "string"
           },
           "punchline": {
-            "type": "string",
-            "example": "Because they make up everything!"
+            "type": "string"
           },
           "type": {
-            "type": "string",
-            "example": "general"
+            "type": "string"
           },
           "author": {
-            "type": "string",
-            "example": "John Doe"
+            "type": "string"
           },
           "createdAt": {
             "type": "string",
-            "format": "date-time",
-            "example": "2023-07-20T12:34:56.789Z"
+            "format": "date-time"
           },
           "updatedAt": {
             "type": "string",
-            "format": "date-time",
-            "example": "2023-07-20T12:34:56.789Z"
+            "format": "date-time"
+          },
+          "__v": {
+            "type": "integer"
           }
         }
       },
-      "NewJoke": {
+      "LoginRequest": {
         "type": "object",
         "properties": {
-          "setup": {
+          "email": {
             "type": "string",
-            "example": "Why don't scientists trust atoms?"
+            "format": "email"
           },
-          "punchline": {
+          "password": {
             "type": "string",
-            "example": "Because they make up everything!"
-          },
-          "type": {
-            "type": "string",
-            "example": "general"
-          },
-          "author": {
-            "type": "string",
-            "example": "John Doe"
+            "format": "password"
           }
         },
-        "required": ["setup", "punchline", "type", "author"]
+        "required": ["email", "password"]
       },
-      "UpdateJoke": {
+      "RegisterRequest": {
         "type": "object",
         "properties": {
-          "content": {
+          "email": {
             "type": "string",
-            "example": "Why don't scientists trust atoms? Because they make up everything!"
+            "format": "email"
           },
-          "author": {
+          "password": {
             "type": "string",
-            "example": "John Doe"
+            "format": "password"
+          }
+        },
+        "required": ["email", "password"]
+      },
+      "AuthResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "token": {
+            "type": "string"
           }
         }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
       }
     }
   }

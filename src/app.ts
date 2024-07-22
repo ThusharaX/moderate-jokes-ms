@@ -21,13 +21,12 @@ app.use(
   }),
 );
 
-if (envs.NODE_ENV !== "production") {
-  app.use(
-    `${envs.DEFAULT_API_PREFIX}/docs`,
-    swaggerUi.serve,
-    swaggerUi.setup(swaggerDocument),
-  );
-}
+// ! For development only
+app.use(
+  `${envs.DEFAULT_API_PREFIX}/docs`,
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerDocument),
+);
 
 app.use(`${envs.DEFAULT_API_PREFIX}/jokes`, jokeRoutes);
 app.use(`${envs.DEFAULT_API_PREFIX}/auth`, authRoutes);
