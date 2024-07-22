@@ -1,8 +1,8 @@
 import axios from "axios";
 import { envs } from "../config/env";
 
-const SUBMIT_JOKES_MS = `${envs.BACKEND_DOMAIN}/submit`;
-const DELIVER_JOKES_MS = `${envs.BACKEND_DOMAIN}/deliver`;
+const SUBMIT_JOKES_MS = `${envs.SUBMIT_SERVICE}`;
+const DELIVER_JOKES_MS = `${envs.DELIVER_SERVICE}`;
 
 const getAllSubmittedJokes = async () => {
   // ! api request to 'submit-jokes-ms' microservice
