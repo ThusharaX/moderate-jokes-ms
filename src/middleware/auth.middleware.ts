@@ -10,16 +10,8 @@ interface DecodedToken {
 const authMiddleware =
   () => (req: Request, res: Response, next: NextFunction) => {
     try {
-      const authHeader = req.headers.authorization;
+      const token = req.cookies.token;
 
-      if (!authHeader) {
-        return res.status(401).json({
-          success: false,
-          message: "Authorization header missing",
-        });
-      }
-
-      const token = authHeader.split(" ")[1];
       const decoded = jwt.verify(
         token,
         envs.JWT_SECRET as string,

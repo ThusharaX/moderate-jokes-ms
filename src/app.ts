@@ -6,11 +6,13 @@ import swaggerUi from "swagger-ui-express";
 import swaggerDocument from "../swagger.json";
 import cors from "cors";
 import helmet from "helmet";
+import cookieParser from "cookie-parser";
 
 const app: Application = express();
 
 // Middleware
 app.use(express.json({ limit: "50mb" }));
+app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(helmet());
 app.use(
