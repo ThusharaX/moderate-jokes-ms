@@ -5,7 +5,13 @@ const loginController = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
     const token = await loginService(email, password);
-    res.status(200).json({ message: "Logged in successfully", token });
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 3600000,
+    });
+    res.status(200).json({ message: "Logged in successfully" });
   } catch (error) {
     res.status(400).json({ error: (error as Error).message });
   }
@@ -23,4 +29,9 @@ const registerController = async (req: Request, res: Response) => {
   }
 };
 
-export { loginController, registerController };
+const logoutController = async (req: Request, res: Response) => {
+  res.clearCookie("token");
+  res.status(200).json({ message: "Logged out successfully" });
+};
+
+export { loginController, registerController, logoutController };
